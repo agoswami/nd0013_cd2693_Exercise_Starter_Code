@@ -18,12 +18,9 @@ Eigen::Matrix4d ICP(PointCloudT::Ptr target, PointCloudT::Ptr source, Pose start
 	//TODO: complete the ICP function and return the corrected transform
 
 	// Transform the source to startingPose
-	Eigen::Matrix4d initialPoseTransform = transform2D(startingPose.theta, startingPose.position.xt, startingPose.position.yt)
-	
-	PointCloudT::Ptr transformSource (new PointCloudT);
-
+	Eigen::Matrix4d initialPoseTransform = transform2D(startingPose.theta, startingPose.position.x, startingPose.position.y)
+	PointCloudT::Ptr transformSource (new PointCloudT); 
 	pcl::transformPointCloud (*source, *transformSource, initialPoseTransform);
-
 
 	// Create PCl ICP object
 	pcl::IterativeClosestPoint<PointT, PointT> icp;
@@ -42,7 +39,7 @@ Eigen::Matrix4d ICP(PointCloudT::Ptr target, PointCloudT::Ptr source, Pose start
   	{
   		std::cout << "\nICP has converged, score is " << icp.getFitnessScore () << std::endl;
   		transformation_matrix = icp.getFinalTransformation ().cast<double>();
-  		transformation_matrix =  transformation_matrix * transformPointCloud;
+  		transformation_matrix =  transformation_matrix * initialPoseTransform;
   		return transformation_matrix;
   	}
 
