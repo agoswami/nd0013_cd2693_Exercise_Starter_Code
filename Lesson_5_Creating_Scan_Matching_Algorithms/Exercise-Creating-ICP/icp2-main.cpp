@@ -79,7 +79,7 @@ double Score(vector<int> pairs, PointCloudT::Ptr target, PointCloudT::Ptr source
 		p(3,0) = 1.0;
 		Eigen::MatrixXd p2 = transform * p;
 		PointT association = (*target)[i];
-		score += sqrt( (p2(0,0) - association.x) * (p2(0,0) - association.x) + (p2(1,0) - association.y) * (p2(1,0) - association.y) );
+		score += (p2(0,0) - association.x) * (p2(0,0) - association.x) + (p2(1,0) - association.y) * (p2(1,0) - association.y);
 		index++;
 	}
 	return score;
@@ -91,6 +91,19 @@ vector<int> NN(PointCloudT::Ptr target, PointCloudT::Ptr source, Eigen::Matrix4d
 
 	// TODO: complete this function which returns a vector of target indicies that correspond to each source index inorder.
 	// E.G. source index 0 -> target index 32, source index 1 -> target index 5, source index 2 -> target index 17, ... 
+	
+	// Create KDTree object in PCL
+	pcl::KdTreeFLANN<PointT> kdtree;
+	kdtree.setInputCloud (target); // use the target point cloud as input
+	// Use KDTree object to get closest point
+	vector<int> pointIdxRadiusSearch;
+	vector<float> pointRadiusSquaredDistance;
+	#POINT `pcl::PointXYZ` (input point from transformed source) 
+	#DISTANCE `double` use distance parameter from `NN` header
+	kdtree.radiusSearch (#POINT, #DISTANCE, pointIdxRadiusSearch, pointRadiusSquaredDistance) // if no points found within distance returns -1.
+
+	
+	// otherwise closest target point index is pointIdxRadiusSearch[0]
 
 	// TODO: create a KDtree with target as input
 
